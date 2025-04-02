@@ -35,7 +35,7 @@ public class User {
     //@JsonProperty("profilePicture")
     private byte[] profilePicture;
 
-    public User(Long id, String userName, String firstName, String lastName,
+    public User(Long id, String firstName, String lastName,
                 String phone, String email, String address, UserTypes userType, byte[] profilePicture) {
         this.id = id;
         //this.userName = userName;

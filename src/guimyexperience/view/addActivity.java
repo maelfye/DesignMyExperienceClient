@@ -3,23 +3,74 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package guimyexperience.view;
-
-import java.text.SimpleDateFormat;
+import guimyexperience.model.Offering;
+import guimyexperience.model.Activity;
+import guimyexperience.model.OfferingTypes;
+import guimyexperience.model.BusinessOwner;
+import guimyexperience.model.User;
 import java.util.Date;
-
+import java.text.SimpleDateFormat;
+import org.json.JSONObject;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.File;
+import java.util.List;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.TransferHandler;
+import java.awt.Image;
+import java.awt.datatransfer.DataFlavor;
+import java.util.Base64;
+import java.nio.file.Files;
 /**
  *
  * @author maelfye
  */
 public class addActivity extends javax.swing.JFrame {
-
+private User loggedInUser;
+private File droppedImageFile;
     /**
      * Creates new form addActivity
      */
-    public addActivity() {
-        initComponents();
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-    }
+    public addActivity(User user) {
+    this.loggedInUser = user;
+    initComponents();
+    
+    lblDropImage.setTransferHandler(new TransferHandler() {
+        
+        public boolean canImport(TransferSupport support) {
+            return support.isDataFlavorSupported(DataFlavor.javaFileListFlavor);
+        }
+
+        public boolean importData(TransferSupport support) {
+            try {
+                List<File> files = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+                if (!files.isEmpty()) {
+                    File file = files.get(0);
+                    if (file.getName().toLowerCase().matches(".*\\.(png|jpg|jpeg|gif)$")) {
+                        droppedImageFile = file;
+                        ImageIcon icon = new ImageIcon(file.getAbsolutePath());
+                        Image scaledImage = icon.getImage().getScaledInstance(lblDropImage.getWidth(), lblDropImage.getHeight(), Image.SCALE_SMOOTH);
+                        lblDropImage.setIcon(new ImageIcon(scaledImage));
+                        lblDropImage.setText("");
+
+                        return true;
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Please drop an image file (JPG, PNG, etc.).");
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+    });
+
+    setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+}
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -45,7 +96,13 @@ public class addActivity extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         txtDuration = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        txtEquipmentRiquired = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtCapacity = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtDescription = new javax.swing.JTextPane();
+        RBequipment = new javax.swing.JRadioButton();
+        lblDropImage = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -57,7 +114,7 @@ public class addActivity extends javax.swing.JFrame {
             }
         });
 
-        lblStartDate.setText("start date ( DD-MM-YYYY-HH) ");
+        lblStartDate.setText("Start Date : (DD-MM-YYYY HH:mm)");
 
         txtStartDate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -65,7 +122,7 @@ public class addActivity extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("end date ( DD-MM-YYYY-HH)");
+        jLabel1.setText("End Date : ( DD-MM-YYYY HH:mm)");
 
         txtEndDate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -106,35 +163,52 @@ public class addActivity extends javax.swing.JFrame {
 
         jLabel5.setText("equipment required");
 
+        jLabel6.setText("capacity");
+
+        jLabel7.setText("Description");
+
+        jScrollPane1.setViewportView(txtDescription);
+
+        RBequipment.setText("yes");
+
+        lblDropImage.setText("drop image here");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblStartDate)
-                    .addComponent(lblActivityName)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel5))
-                .addGap(26, 26, 26)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(txtEquipmentRiquired, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(BSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(txtEndDate, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
-                        .addComponent(txtStartDate, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(txtActivityName))
+                        .addGap(20, 20, 20)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblStartDate)
+                            .addComponent(lblActivityName)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(64, 64, 64)
+                        .addComponent(BSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(26, 26, 26)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblDropImage, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(txtDuration, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
                         .addComponent(txtArea, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(txtPrice, javax.swing.GroupLayout.Alignment.LEADING)))
-                .addContainerGap(41, Short.MAX_VALUE))
+                        .addComponent(txtPrice, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addComponent(txtCapacity, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(RBequipment)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(txtEndDate, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
+                        .addComponent(txtStartDate, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(txtActivityName)))
+                .addContainerGap(93, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -163,23 +237,47 @@ public class addActivity extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(txtDuration, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
+                .addGap(27, 27, 27)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(txtEquipmentRiquired, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(BSubmit))
-                .addContainerGap(31, Short.MAX_VALUE))
+                    .addComponent(RBequipment))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel6)
+                    .addComponent(txtCapacity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addComponent(jLabel7))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(BSubmit)
+                        .addGap(51, 51, 51))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(lblDropImage, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(9, Short.MAX_VALUE))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -211,68 +309,113 @@ public class addActivity extends javax.swing.JFrame {
 
     private void BSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BSubmitActionPerformed
 
+        
 try{
-    String ActivityName = txtActivityName.getText();
+     String ActivityName = txtActivityName.getText();
     double Price = Double.parseDouble(txtPrice.getText());
     String Area = txtArea.getText();
     double duration = Double.parseDouble(txtDuration.getText());
-    String EquipmentRequired = txtEquipmentRiquired.getText();
-    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy-hh");
+    boolean EquipmentProvided = RBequipment.isSelected(); 
+    
+    // Date parsing
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm"); 
     Date StartDate = dateFormat.parse(txtStartDate.getText());
+    Date EndDate = dateFormat.parse(txtEndDate.getText());
+
+    int capacity = Integer.parseInt(txtCapacity.getText());
+    String Description = txtDescription.getText();
+    BusinessOwner businessOwner = (BusinessOwner) loggedInUser;
+    Offering activity = new Activity(1L, ActivityName, Description, capacity, Area, 
+        OfferingTypes.Activity, null, Price, businessOwner, duration, 
+         StartDate, EndDate
+    );
+try {
+    JSONObject activityJson = new JSONObject();
+    activityJson.put("title",ActivityName);
+    activityJson.put("description", Description);
+    activityJson.put("capacity", capacity);
+    activityJson.put("location", Area);
+    activityJson.put("type", "Activity");
+    if (droppedImageFile != null) {
+    byte[] imageBytes = Files.readAllBytes(droppedImageFile.toPath());
+    String encodedImage = Base64.getEncoder().encodeToString(imageBytes);
+    activityJson.put("picture", encodedImage);  // image as Base64 string
+} else {
+    activityJson.put("picture", JSONObject.NULL);
+}
+    activityJson.put("price", Price);
+    activityJson.put("duration", duration);
+    
+    JSONObject businessOwnerJson = new JSONObject();
+    businessOwnerJson.put("id", businessOwner.getId());
+    activityJson.put("businessOwner", businessOwnerJson);
+    
+    SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    activityJson.put("startDate", isoFormat.format(StartDate));
+    activityJson.put("endDate", isoFormat.format(EndDate));
+    
+    System.out.println("Sending JSON: " + activityJson.toString(2));
+    
+    URL url = new URL("http://localhost:8080/api/offerings/activities");
+    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+    conn.setRequestMethod("POST");
+    conn.setRequestProperty("Content-Type", "application/json");
+    conn.setDoOutput(true);
+    
+    conn.getOutputStream().write(activityJson.toString().getBytes("UTF-8"));
+
+    int responseCode = conn.getResponseCode();
+
+   if (responseCode == 201) {
+        JOptionPane.showMessageDialog(null, "Activity created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        dispose();
+    } else {
+        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+        StringBuilder errorResponse = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+            errorResponse.append(line);
+        }
+        br.close();
+        JOptionPane.showMessageDialog(null, "Failed to create activity.\n" + errorResponse.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+} catch (Exception e) {
+    e.printStackTrace();
+    JOptionPane.showMessageDialog(null, "Error sending activity: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+}
+    
+} catch (Exception e) {
+    JOptionPane.showMessageDialog(null, "Invalid Date Format! Use dd-MM-yyyy HH:mm", "Error", JOptionPane.ERROR_MESSAGE);
+}   
     }//GEN-LAST:event_BSubmitActionPerformed
-catch (Exception e) {
-        System.err.println("Error: " + e.getMessage());
-        e.printStackTrace(); }}
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(addActivity.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(addActivity.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(addActivity.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(addActivity.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new addActivity().setVisible(true);
-            }
-        });
-    }
+   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BSubmit;
+    private javax.swing.JRadioButton RBequipment;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblActivityName;
+    private javax.swing.JLabel lblDropImage;
     private javax.swing.JLabel lblStartDate;
     private javax.swing.JTextField txtActivityName;
     private javax.swing.JTextField txtArea;
+    private javax.swing.JTextField txtCapacity;
+    private javax.swing.JTextPane txtDescription;
     private javax.swing.JTextField txtDuration;
     private javax.swing.JTextField txtEndDate;
-    private javax.swing.JTextField txtEquipmentRiquired;
     private javax.swing.JTextField txtPrice;
     private javax.swing.JTextField txtStartDate;
     // End of variables declaration//GEN-END:variables

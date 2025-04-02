@@ -3,19 +3,27 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package guimyexperience.view;
-
+import guimyexperience.model.User;
+import guimyexperience.model.BusinessOwner;
+import javax.swing.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import org.json.JSONObject;
+import java.nio.charset.StandardCharsets;
+import java.io.OutputStream;
+import guimyexperience.dto.CreateBusinessOwnerRequest;
 /**
  *
  * @author maelfye
  */
 public class BusinessCreation extends javax.swing.JFrame {
-  
+  private User user;
+  private String password;
     
 
-    /**
-     * Creates new form BuisnessCreation2
-     */
-    public BusinessCreation() {
+    public BusinessCreation(User user,String password) {
+        this.user = user;
+        this.password = password;
         
         initComponents();
     }
@@ -130,52 +138,77 @@ public class BusinessCreation extends javax.swing.JFrame {
     }//GEN-LAST:event_txtBuisnessDescriptionActionPerformed
 
     private void BSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BSubmitActionPerformed
-        String BuisnessName = txtBuisnessName.getText();
-        String BuisnessAdress = txtBuisnessAdress.getText();
-        String Description = txtBuisnessDescription.getText();
-        System.out.println("Buisness name "+BuisnessName);
-        System.out.println("Buisness Adress "+BuisnessAdress);
-        System.out.println("Description : "+Description);
-        
-        
+    
+    //Collect business form data
+    String businessName = txtBuisnessName.getText();
+    String businessAddress = txtBuisnessAdress.getText();
+    String businessDescription = txtBuisnessDescription.getText();
+
+    //Build the BusinessOwner from the base user
+    BusinessOwner bo = new BusinessOwner(
+        user,
+        businessName,
+        businessAddress,
+        businessDescription,
+        null 
+    );
+
+    //Create the DTO and fill it
+    CreateBusinessOwnerRequest requestDTO = new CreateBusinessOwnerRequest();
+    requestDTO.setBusinessOwner(bo);
+    requestDTO.setPassword(password); 
+
+    try {
+        // Build request JSON 
+        JSONObject businessJson = new JSONObject();
+        businessJson.put("firstName", bo.getFirstName());
+        businessJson.put("lastName", bo.getLastName());
+        businessJson.put("phone", bo.getPhone());
+        businessJson.put("email", bo.getEmail());
+        businessJson.put("address", bo.getAddress());
+        businessJson.put("userType", "BusinessOwner");
+        businessJson.put("businessName", bo.getBusinessName());
+        businessJson.put("businessAddress", bo.getBusinessAddress());
+        businessJson.put("businessDescription", bo.getBusinessDescription());
+
+        JSONObject requestJson = new JSONObject();
+        requestJson.put("businessOwner", businessJson);
+        requestJson.put("password", requestDTO.getPassword());
+
+        //Send the POST request
+        String apiUrl = "http://localhost:8080/api/users/business-owners"; 
+        URL url = new URL(apiUrl);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setDoOutput(true);
+
+        try (OutputStream os = conn.getOutputStream()) {
+            byte[] input = requestJson.toString().getBytes(StandardCharsets.UTF_8);
+            os.write(input, 0, input.length);
+        }
+
+        int responseCode = conn.getResponseCode();
+
+        if (responseCode == 201) {
+            JOptionPane.showMessageDialog(this, "Business account created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            this.setVisible(false);
+            new Connexion().setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to create business account. Code: " + responseCode, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error sending business data to server.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_BSubmitActionPerformed
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(BusinessCreation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(BusinessCreation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(BusinessCreation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(BusinessCreation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                
-                new BusinessCreation().setVisible(false);
-            }
-        });
-    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BSubmit;

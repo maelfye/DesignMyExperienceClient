@@ -6,21 +6,68 @@ package guimyexperience.view;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import guimyexperience.model.User;
+import org.json.JSONObject;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.List;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.TransferHandler;
+import java.awt.Image;
+import java.awt.datatransfer.DataFlavor;
+import java.util.Base64;
+import java.nio.file.Files;
+import java.io.File;
 /**
  *
  * @author maelfye
  */
 public class addServices extends javax.swing.JFrame {
-
+private User loggedInUser;
+private File droppedImageFile;
     /**
      * Creates new form addServices
      */
-    public addServices() {
+    public addServices(User loggedInUser) {
+        this.loggedInUser = loggedInUser;
         initComponents();
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-    }
+        
+lblDropImage.setTransferHandler(new TransferHandler() {
+        
+        public boolean canImport(TransferHandler.TransferSupport support) {
+            return support.isDataFlavorSupported(DataFlavor.javaFileListFlavor);
+        }
 
+        public boolean importData(TransferHandler.TransferSupport support) {
+            try {
+                List<File> files = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+                if (!files.isEmpty()) {
+                    File file = files.get(0);
+                    if (file.getName().toLowerCase().matches(".*\\.(png|jpg|jpeg|gif)$")) {
+                        droppedImageFile = file;
+                        ImageIcon icon = new ImageIcon(file.getAbsolutePath());
+                        Image scaledImage = icon.getImage().getScaledInstance(lblDropImage.getWidth(), lblDropImage.getHeight(), Image.SCALE_SMOOTH);
+                        lblDropImage.setIcon(new ImageIcon(scaledImage));
+                        lblDropImage.setText("");
+
+                        return true;
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Please drop an image file (JPG, PNG, etc.).");
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+    });
+
+    setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+}
+        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -30,6 +77,10 @@ public class addServices extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextPane1 = new javax.swing.JTextPane();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         txtNameService = new javax.swing.JTextField();
@@ -42,6 +93,22 @@ public class addServices extends javax.swing.JFrame {
         Badd = new javax.swing.JButton();
         txtPrice = new javax.swing.JTextField();
         txtArea = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtCapacity = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txtDuration = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        txtServiceType = new javax.swing.JTextField();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        txtDescription = new javax.swing.JTextArea();
+        chkOnDemand = new javax.swing.JCheckBox();
+        lblDropImage = new javax.swing.JLabel();
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
+
+        jScrollPane2.setViewportView(jTextPane1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -68,39 +135,71 @@ public class addServices extends javax.swing.JFrame {
             }
         });
 
+        jLabel6.setText("Capacity");
+
+        jLabel7.setText("Duration");
+
+        jLabel8.setText("ServiceType");
+
+        txtDescription.setColumns(20);
+        txtDescription.setRows(5);
+        jScrollPane3.setViewportView(txtDescription);
+
+        chkOnDemand.setText("OnDemand");
+
+        lblDropImage.setText("Drop Image here");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel7)
+                        .addComponent(jLabel6)
+                        .addComponent(jLabel8)))
+                .addGap(20, 20, 20)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(Badd)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(201, 201, 201)
+                        .addGap(11, 11, 11)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(59, 59, 59)
                                 .addComponent(jLabel5)
-                                .addGap(26, 26, 26)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(txtArea, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtNameService, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(txtOpeningHour, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(42, 42, 42)
                                 .addComponent(jLabel3)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtClosingHour, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtClosingHour, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(jLabel1)
-                        .addGap(31, 31, 31)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtOpeningHour, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtNameService, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(42, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtCapacity, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(txtServiceType, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(txtDuration, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)))
+                                .addComponent(chkOnDemand))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(93, 93, 93)
+                                .addComponent(Badd)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 133, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(lblDropImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addContainerGap())))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -109,21 +208,46 @@ public class addServices extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txtNameService, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(42, 42, 42)
+                .addGap(13, 13, 13)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel2)
                     .addComponent(txtOpeningHour, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3)
                     .addComponent(txtClosingHour, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(43, 43, 43)
+                .addGap(17, 17, 17)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(jLabel5)
-                    .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
-                .addComponent(Badd)
-                .addGap(47, 47, 47))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel6)
+                                    .addComponent(txtCapacity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(26, 26, 26)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtDuration, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel7))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel8)
+                                    .addComponent(txtServiceType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(29, 29, 29)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(30, 30, 30)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(chkOnDemand)
+                                .addContainerGap(59, Short.MAX_VALUE))
+                            .addComponent(lblDropImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Badd))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -132,13 +256,13 @@ public class addServices extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 67, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 8, Short.MAX_VALUE))
+                .addGap(0, 48, Short.MAX_VALUE))
         );
 
         pack();
@@ -146,39 +270,130 @@ public class addServices extends javax.swing.JFrame {
 
     private void BaddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BaddActionPerformed
         // TODO add your handling code here:
-String ServiceName = txtNameService.getText();
-String ServiceArea = txtArea.getText();
-String OpeningHour = txtOpeningHour.getText();
-String ClosingHour = txtClosingHour.getText();
+        String serviceName = txtNameService.getText();
+String serviceArea = txtArea.getText();
+String openingHourStr = txtOpeningHour.getText();
+String closingHourStr = txtClosingHour.getText();
+String serviceType = txtServiceType.getText();
+String Description = txtDescription.getText();
+boolean onDemand = chkOnDemand.isSelected(); // Assuming there's a checkbox for On-Demand
 
+double price;
+int capacity;
+double duration;
 
- // Define a formatter for parsing (HH:mm format)
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+// Validate numeric inputs
+try {
+    price = Double.parseDouble(txtPrice.getText());
+    capacity = Integer.parseInt(txtCapacity.getText());
+    duration = Double.parseDouble(txtDuration.getText());
+} catch (NumberFormatException e) {
+    JOptionPane.showMessageDialog(this,
+        "Invalid input for price, capacity, or duration! Please enter valid numbers.",
+        "Error", JOptionPane.ERROR_MESSAGE);
+    return;
+}
 
-    try {
-        // Convert Strings to LocalTime
-        LocalTime openingHour = LocalTime.parse(OpeningHour, formatter);
-        LocalTime closingHour = LocalTime.parse(ClosingHour, formatter);
+// Define a formatter for parsing (HH:mm format)
+DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+LocalTime openingHour;
+LocalTime closingHour;
 
-        // Display parsed times
-        System.out.println("Opening Hour: " + openingHour);
-        System.out.println("Closing Hour: " + closingHour);
+try {
+    // Convert Strings to LocalTime
+    openingHour = LocalTime.parse(openingHourStr, formatter);
+    closingHour = LocalTime.parse(closingHourStr, formatter);
 
-        // (Optional) Show confirmation message
-        JOptionPane.showMessageDialog(this, 
-            "Service Added:\n" + 
-            "Name: " + ServiceName + "\n" +
-            "Area: " + ServiceArea + "\n" +
-            "Opening: " + openingHour + "\n" +
-            "Closing: " + closingHour, 
-            "Success", JOptionPane.INFORMATION_MESSAGE);
-
-    } catch (DateTimeParseException e) {
-        JOptionPane.showMessageDialog(this, 
-            "Invalid time format! Please enter time in HH:mm format (e.g., 09:30).", 
+    // Ensure opening time is before closing time
+    if (openingHour.isAfter(closingHour)) {
+        JOptionPane.showMessageDialog(this,
+            "Opening hour must be before closing hour!",
             "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+} catch (DateTimeParseException e) {
+    JOptionPane.showMessageDialog(this,
+        "Invalid time format! Please enter time in HH:mm format (e.g., 09:30).",
+        "Error", JOptionPane.ERROR_MESSAGE);
+    return;
+}
+
+
+try {
+    JSONObject serviceJson = new JSONObject();
+    serviceJson.put("title", serviceName);
+    serviceJson.put("description", Description);
+    serviceJson.put("capacity", capacity);
+    serviceJson.put("location", serviceArea);
+    serviceJson.put("type", "Service");
+    if (droppedImageFile != null) {
+    byte[] imageBytes = Files.readAllBytes(droppedImageFile.toPath());
+    String encodedImage = Base64.getEncoder().encodeToString(imageBytes);
+    serviceJson.put("picture", encodedImage); 
+    } else {
+    serviceJson.put("picture", JSONObject.NULL);
+    }
+    serviceJson.put("price", price);
+    serviceJson.put("duration", duration);
+    serviceJson.put("onDemand", onDemand);
+    
+    // Format times to ISO
+    DateTimeFormatter isoTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+    String today = java.time.LocalDate.now().toString(); // e.g., "2025-03-27"
+    serviceJson.put("opening", today + "T" + openingHour + ":00");
+    serviceJson.put("closing", today + "T" + closingHour + ":00");
+
+    serviceJson.put("serviceArea", serviceArea);
+
+    // Add businessOwner
+    JSONObject businessOwnerJson = new JSONObject();
+    businessOwnerJson.put("id", loggedInUser.getId());
+    serviceJson.put("businessOwner", businessOwnerJson);
+
+    // DEBUG
+    System.out.println("Sending JSON for service:\n" + serviceJson.toString(2));
+
+    // Send POST
+    URL url = new URL("http://localhost:8080/api/offerings/services");
+    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+    conn.setRequestMethod("POST");
+    conn.setRequestProperty("Content-Type", "application/json");
+    conn.setDoOutput(true);
+
+    conn.getOutputStream().write(serviceJson.toString().getBytes("UTF-8"));
+
+    int responseCode = conn.getResponseCode();
+    if (responseCode == 201) {
+        JOptionPane.showMessageDialog(this, "Service created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        dispose();
+    } else {
+        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+        StringBuilder errorResponse = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+            errorResponse.append(line);
+        }
+        br.close();
+        JOptionPane.showMessageDialog(this, "Failed to create service.\n" + errorResponse.toString(), "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+} catch (Exception ex) {
+    ex.printStackTrace();
+    JOptionPane.showMessageDialog(this, "Error sending service: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+}
+// Display confirmation message
+JOptionPane.showMessageDialog(this,
+    "Service Created Successfully:\n" +
+    "Name: " + serviceName + "\n" +
+    "Type: " + serviceType + "\n" +
+    "On-Demand: " + (onDemand ? "Yes" : "No") + "\n" +
+    "Opening: " + openingHour + "\n" +
+    "Closing: " + closingHour + "\n" +
+    "Price: $" + price + "\n" +
+    "Capacity: " + capacity + " people\n" +
+    "Duration: " + duration + " hours",
+    "Success", JOptionPane.INFORMATION_MESSAGE);
+        
     }//GEN-LAST:event_BaddActionPerformed
 
     private void txtClosingHourActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtClosingHourActionPerformed
@@ -188,50 +403,34 @@ String ClosingHour = txtClosingHour.getText();
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(addServices.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(addServices.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(addServices.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(addServices.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new addServices().setVisible(true);
-            }
-        });
-    }
+  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Badd;
+    private javax.swing.JCheckBox chkOnDemand;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JLabel lblDropImage;
     private javax.swing.JTextField txtArea;
+    private javax.swing.JTextField txtCapacity;
     private javax.swing.JTextField txtClosingHour;
+    private javax.swing.JTextArea txtDescription;
+    private javax.swing.JTextField txtDuration;
     private javax.swing.JTextField txtNameService;
     private javax.swing.JTextField txtOpeningHour;
     private javax.swing.JTextField txtPrice;
+    private javax.swing.JTextField txtServiceType;
     // End of variables declaration//GEN-END:variables
 }

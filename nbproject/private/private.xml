@@ -3,14 +3,21 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/User.java</file>
-            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/addActivity.java</file>
-            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/addServices.java</file>
-            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/ClientInterface.java</file>
-            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/BuisnessOwnerInterface.java</file>
-            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/Connexion.java</file>
-            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/MainScreen.java</file>
-            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/Client.java</file>
+            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/view/MainScreen.java</file>
+            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/view/BusinessCreation.java</file>
+            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/view/addServices.java</file>
+            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/view/ClientInterface.java</file>
+            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/view/BuisnessInterface.java</file>
+            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/view/addActivity.java</file>
+            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/model/Service.java</file>
+            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/model/Booking.java</file>
+            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/model/Activity.java</file>
+            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/view/CreateAccount.java</file>
+            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/view/ActivityInterface.java</file>
+            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/view/BusinessOwnerInterface.java</file>
+            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/model/Offering.java</file>
+            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/view/BookActivity.java</file>
+            <file>file:/Users/maelfye/NetBeansProjects/GUIMyExperience/src/guimyexperience/view/Connexion.java</file>
         </group>
     </open-files>
 </project-private>

@@ -3,12 +3,19 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package guimyexperience.view;
+
+import guimyexperience.model.User;
 import guimyexperience.model.BusinessOwner;
 import guimyexperience.model.Client;
-import guimyexperience.model.User;
 import guimyexperience.model.UserTypes;
-import guimyexperience.view.MainScreen;
-import javax.swing.JOptionPane;
+import org.json.JSONObject;
+import javax.swing.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 /**
  *
  * @author maelfye
@@ -39,6 +46,8 @@ private User loggedInUser;
         PassWord = new javax.swing.JPasswordField();
         jLabel3 = new javax.swing.JLabel();
         BConnexion = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -61,39 +70,55 @@ private User loggedInUser;
             }
         });
 
+        jLabel4.setText("--------------------------------------");
+
+        jButton1.setText("create account");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(jLabel3)
+                        .addGap(56, 56, 56))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel2)
+                        .addGap(73, 73, 73)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(jLabel3)
-                                .addGap(56, 56, 56))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel2)
-                                .addGap(73, 73, 73)))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(PassWord, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(132, 132, 132)
-                        .addComponent(jLabel1))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(140, 140, 140)
-                        .addComponent(BConnexion)))
-                .addContainerGap(121, Short.MAX_VALUE))
+                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(PassWord, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 102, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(BConnexion)
+                        .addGap(147, 147, 147))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(151, 151, 151))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(82, 82, 82))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addGap(132, 132, 132))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addGap(17, 17, 17)
                 .addComponent(jLabel1)
-                .addGap(33, 33, 33)
+                .addGap(32, 32, 32)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(52, 52, 52)
@@ -103,9 +128,13 @@ private User loggedInUser;
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel2)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(BConnexion)
-                .addGap(67, 67, 67))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel4)
+                .addGap(18, 18, 18)
+                .addComponent(jButton1)
+                .addContainerGap(42, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -127,28 +156,79 @@ private User loggedInUser;
     }//GEN-LAST:event_PassWordActionPerformed
 
     private void BConnexionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BConnexionActionPerformed
-     String email = txtEmail.getText();
-     String password = new String(PassWord.getPassword());
+         String email = txtEmail.getText();
+         String password = new String(PassWord.getPassword());
 
-    // Hardcoded Users
-        if (email.equals("client@example.com") && password.equals("client123")) {
-            loggedInUser = new Client(1L, "clientUser", "John", "Doe", "123456789", email, "Client Address", UserTypes.Client, null);
-            JOptionPane.showMessageDialog(this, "Client Login Successful!");
-        } else if (email.equals("owner@example.com") && password.equals("owner123")) {
-            loggedInUser = new BusinessOwner(2L, "ownerUser", "Alice", "Smith", "987654321", email, "Owner Address", UserTypes.BusinessOwner, null);
-            JOptionPane.showMessageDialog(this, "Business Owner Login Successful!");
-        } else {
-            JOptionPane.showMessageDialog(this, "Invalid email or password!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+        // Create JSON request body
+        String jsonInputString = "{ \"email\": \"" + email + "\", \"password\": \"" + password + "\" }";
+
+        // Define the API endpoint
+        String apiUrl = "http://localhost:8080/api/users/login"; // Ensure backend is running
+
+        try {
+            // set the connextion with the API
+            URL url = new URL(apiUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
+
+            // Send JSON data
+            try (OutputStream os = conn.getOutputStream()) {
+                byte[] input = jsonInputString.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+
+            // verify if the connexion have no issues
+            int responseCode = conn.getResponseCode();
+
+            // if there is no issues read the date that the API sent 
+            if (responseCode == HttpURLConnection.HTTP_OK) { 
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = in.readLine()) != null) {
+                    response.append(line.trim());
+                }
+                in.close();
+
+                // create a json object to allow us to read it 
+                JSONObject jsonResponse = new JSONObject(response.toString());
+
+                UserTypes userType = UserTypes.valueOf(jsonResponse.getString("userType"));
+                
+            loggedInUser = new User(
+            jsonResponse.getLong("id"),
+            jsonResponse.getString("firstName"),
+            jsonResponse.getString("lastName"),
+            jsonResponse.getString("phone"),
+            jsonResponse.getString("email"),
+            jsonResponse.getString("address"),
+            userType,
+            null 
+                );
+            MainScreen main = new MainScreen(loggedInUser);
+            main.setVisible(true);
+            this.dispose();
+                
+                
+
+            } else { // Invalid login
+                JOptionPane.showMessageDialog(this, "Invalid email or password!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error connecting to API: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-
-        // Open MainScreen with the logged-in user
-        MainScreen main = new MainScreen(loggedInUser);
-        main.setVisible(true);
-        this.dispose();
-     
+    
         
     }//GEN-LAST:event_BConnexionActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+CreateAccount CA = new CreateAccount();
+CA.setVisible(true);
+this.dispose();// TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
   
     /**
      * @param args the command line arguments
@@ -178,19 +258,22 @@ private User loggedInUser;
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Connexion().setVisible(true);
-            }
-        });
+          java.awt.EventQueue.invokeLater(new Runnable() {
+        public void run() {
+            new Connexion().setVisible(true); 
+        }
+    });
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BConnexion;
     private javax.swing.JPasswordField PassWord;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField txtEmail;
     // End of variables declaration//GEN-END:variables

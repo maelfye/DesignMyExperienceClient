@@ -9,7 +9,7 @@ package guimyexperience.model;
  */
 public class Client extends User {
 
-    public Client(Long id, String userName, String firstName, String lastName, String phone, String email, String address, UserTypes userType, byte[] profilePicture) {
-        super(id, userName, firstName, lastName, phone, email, address, userType, profilePicture);
+    public Client(Long id,  String firstName, String lastName, String phone, String email, String address, UserTypes userType, byte[] profilePicture) {
+        super(id, firstName, lastName, phone, email, address, userType, profilePicture);
     }
 }

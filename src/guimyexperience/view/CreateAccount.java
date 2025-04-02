@@ -3,18 +3,28 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package guimyexperience.view;
-import java.util.Date;
-import java.text.SimpleDateFormat;
+import guimyexperience.model.UserTypes;
+import guimyexperience.model.User;
+import guimyexperience.model.Client;
+import org.json.JSONObject;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import javax.swing.JOptionPane;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import guimyexperience.dto.CreateClientRequest;
 /**
  *
  * @author maelfye
  */
-public class UserInput extends javax.swing.JFrame {
+public class CreateAccount extends javax.swing.JFrame {
 
     /**
      * Creates new form testProject
      */
-    public UserInput() {
+    public CreateAccount() {
         initComponents();
     }
 
@@ -40,8 +50,6 @@ public class UserInput extends javax.swing.JFrame {
         txtPhoneNumber = new javax.swing.JTextField();
         lblPhoneNumber = new javax.swing.JLabel();
         bSubmit = new javax.swing.JButton();
-        lblBirthDate = new javax.swing.JLabel();
-        txtBirthDate = new javax.swing.JTextField();
         txtAdress = new javax.swing.JTextField();
         lblAdress = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
@@ -73,19 +81,16 @@ public class UserInput extends javax.swing.JFrame {
 
         lblPhoneNumber.setText("Phone Number");
 
-        bSubmit.setText("Submit");
+        bSubmit.setText("Create");
         bSubmit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bSubmitActionPerformed(evt);
             }
         });
 
-        lblBirthDate.setText("Birth Date (DD-MM-YYYY)");
-
-        txtBirthDate.setForeground(new java.awt.Color(0, 1, 0));
-        txtBirthDate.addActionListener(new java.awt.event.ActionListener() {
+        txtAdress.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtBirthDateActionPerformed(evt);
+                txtAdressActionPerformed(evt);
             }
         });
 
@@ -127,16 +132,14 @@ public class UserInput extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblPhoneNumber)
-                            .addComponent(lblBirthDate)
                             .addComponent(lblAdress)
                             .addComponent(lblEmail)
                             .addComponent(lblPassword)
                             .addComponent(lblBuisnessOwner))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(70, 70, 70)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtPhoneNumber)
                             .addComponent(txtAdress)
-                            .addComponent(txtBirthDate)
                             .addComponent(txtEmail)
                             .addComponent(PWpasseWord)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -146,7 +149,7 @@ public class UserInput extends javax.swing.JFrame {
                                 .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(392, Short.MAX_VALUE)
+                .addContainerGap(224, Short.MAX_VALUE)
                 .addComponent(bSubmit)
                 .addGap(251, 251, 251))
         );
@@ -167,26 +170,22 @@ public class UserInput extends javax.swing.JFrame {
                     .addComponent(lblPhoneNumber))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblBirthDate)
-                    .addComponent(txtBirthDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(lblAdress)
+                    .addComponent(txtAdress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtAdress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblAdress))
-                .addGap(18, 18, 18)
+                    .addComponent(lblEmail)
+                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(23, 23, 23)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblEmail))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(PWpasseWord, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblPassword))
-                .addGap(27, 27, 27)
+                    .addComponent(lblPassword)
+                    .addComponent(PWpasseWord, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(54, 54, 54)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(brYES)
                     .addComponent(RBno)
                     .addComponent(lblBuisnessOwner))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                 .addComponent(bSubmit)
                 .addGap(48, 48, 48))
         );
@@ -199,51 +198,117 @@ public class UserInput extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void bSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSubmitActionPerformed
- try {
-        
-        int phoneNumber = Integer.parseInt(txtPhoneNumber.getText());
-        String firstName = txtFirstName.getText();
-        String lastName = txtLastName.getText();
-        String address = txtAdress.getText();
-        String email = txtEmail.getText();
-        String password = new String(PWpasseWord.getPassword()); 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        Date birthDate = dateFormat.parse(txtBirthDate.getText());
-        boolean BusinessOwner = brYES.isSelected();        
-        
+     
+         // Gather form data
+    String phoneNumber = txtPhoneNumber.getText();
+    String firstName = txtFirstName.getText();
+    String lastName = txtLastName.getText();
+    String address = txtAdress.getText();
+    String email = txtEmail.getText();
+    String password = new String(PWpasseWord.getPassword());
+    boolean isBusinessOwner = brYES.isSelected();
+
+    // Create base User object 
+    User user = new User(
+        null,
+        firstName,
+        lastName,
+        phoneNumber,
+        email,
+        address,
+        UserTypes.valueOf(isBusinessOwner ? "BusinessOwner" : "Client"),
+        null
+    );
+
+    // Prepare request body (only for client)
+    JSONObject requestJson = new JSONObject();
+
+    if (!isBusinessOwner) {
+        // Create Client
+        Client client = new Client(
+            null,
+            firstName,
+            lastName,
+            phoneNumber,
+            email,
+            address,
+            UserTypes.Client,
+            null
+        );
 
         
-        System.out.println("------ User Input ------");
-        System.out.println("First Name: " + firstName);
-        System.out.println("Last Name: " + lastName);
-        System.out.println("Phone Number: " + phoneNumber);
-        System.out.println("Birth Date: " + birthDate);
-        System.out.println("Address: " + address);
-        System.out.println("Email: " + email);
-        System.out.println("Password: " + password);
-        System.out.println("Business Owner: " + BusinessOwner);
-        System.out.println("------------------------");
-        
-if ( BusinessOwner){
-    
-    
-    BusinessCreation buisnessPanel = new BusinessCreation();  
-    this.setVisible(false);
-    buisnessPanel.setVisible(true);
-    
-}
+        CreateClientRequest CC = new CreateClientRequest();
+        CC.setClient(client);
+        CC.setPassword(password);
+
+        //Build request JSON
+        JSONObject jsonClient = new JSONObject();
+        jsonClient.put("firstName", client.getFirstName());
+        jsonClient.put("lastName", client.getLastName());
+        jsonClient.put("phone", client.getPhone());
+        jsonClient.put("email", client.getEmail());
+        jsonClient.put("address", client.getAddress());
+        jsonClient.put("userType", client.getUserType().toString());
+
+        requestJson.put("client", jsonClient);
+        requestJson.put("password", CC.getPassword());
+    } else {
+        // If business owner, redirect to BusinessCreation screen
+        new BusinessCreation(user,password).setVisible(true);
+        return; 
+    }
+
+    //Send POST request to API
+    try {
+        String apiUrl = "http://localhost:8080/api/users/clients";
+        URL url = new URL(apiUrl);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setDoOutput(true);
+
+        try (OutputStream os = conn.getOutputStream()) {
+            byte[] input = requestJson.toString().getBytes(StandardCharsets.UTF_8);
+            os.write(input, 0, input.length);
+        }
+
+        // Read response
+        int responseCode = conn.getResponseCode();
+        BufferedReader br = new BufferedReader(
+            new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8)
+        );
+
+        StringBuilder response = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+            response.append(line);
+        }
+        br.close();
+
+        // Handle response
+        if (responseCode == 201) {
+            JOptionPane.showMessageDialog(this, "Account created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            new Connexion().setVisible(true);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to create account. Code: " + responseCode, "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
     } catch (Exception e) {
-        System.err.println("Error: " + e.getMessage());
-        e.printStackTrace(); }
-
+        JOptionPane.showMessageDialog(this, "Error while sending request: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    }
         
 // TODO add your handling code here:
     }//GEN-LAST:event_bSubmitActionPerformed
@@ -252,45 +317,11 @@ if ( BusinessOwner){
         // TODO add your handling code here:
     }//GEN-LAST:event_PWpasseWordActionPerformed
 
-    private void txtBirthDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBirthDateActionPerformed
+    private void txtAdressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAdressActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtBirthDateActionPerformed
+    }//GEN-LAST:event_txtAdressActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(UserInput.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(UserInput.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(UserInput.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(UserInput.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new UserInput().setVisible(true);
-            }
-        });
-    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPasswordField PWpasseWord;
@@ -303,7 +334,6 @@ if ( BusinessOwner){
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JScrollPane lCountry;
     private javax.swing.JLabel lblAdress;
-    private javax.swing.JLabel lblBirthDate;
     private javax.swing.JLabel lblBuisnessOwner;
     private javax.swing.JLabel lblCountry;
     private javax.swing.JLabel lblEmail;
@@ -312,7 +342,6 @@ if ( BusinessOwner){
     private javax.swing.JLabel lblPassword;
     private javax.swing.JLabel lblPhoneNumber;
     private javax.swing.JTextField txtAdress;
-    private javax.swing.JTextField txtBirthDate;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtFirstName;
     private javax.swing.JTextField txtLastName;

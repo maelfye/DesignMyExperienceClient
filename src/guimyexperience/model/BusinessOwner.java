@@ -10,13 +10,38 @@ import java.util.List;
  * Represent a business owner. A business owner provides offerings.
  */
 public class BusinessOwner extends User {
-    private Long id;
     private String businessName;
     private String businessAddress;
     private String businessDescription;
     private List<Offering> offerings;
 
-    public BusinessOwner(Long id, String userName, String firstName, String lastName, String phone, String email, String address, UserTypes userType, byte[] profilePicture) {
-        super(id, userName, firstName, lastName, phone, email, address, userType, profilePicture);
+     public BusinessOwner(User user, String businessName, String businessAddress, String businessDescription, List<Offering> offerings) {
+        super(user.getId(), user.getFirstName(), user.getLastName(),
+                user.getPhone(), user.getEmail(), user.getAddress(),
+                user.getUserType(), user.getProfilePicture());
+        this.businessName = businessName;
+        this.businessAddress = businessAddress;
+        this.businessDescription = businessDescription;
+        this.offerings = offerings;
+    }
+public void setActivites(List<Offering> offerings) {
+        this.offerings = offerings;
+    }
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public String getBusinessAddress() {
+        return businessAddress;
+    }
+
+    public String getBusinessDescription() {
+        return businessDescription;
+    }
+
+    public List<Offering> getOfferings() {
+        return offerings;
     }
 }
+
