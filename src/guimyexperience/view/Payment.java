@@ -32,9 +32,37 @@ private javax.swing.JButton btnConfirm;
     this.finalTotalPrice = finalTotalPrice;
     this.bookingDateStr = bookingDateStr;
     this.attendeeCount = attendeeCount;
-    
+   
     initComponents();
-   setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+    
+    txtHash.setEditable(true);
+txtHash.setFocusable(true);
+
+
+javax.swing.InputMap im = txtHash.getInputMap();
+javax.swing.ActionMap am = txtHash.getActionMap();
+
+im.put(javax.swing.KeyStroke.getKeyStroke("control V"), "paste");
+am.put("paste", new javax.swing.text.DefaultEditorKit.PasteAction());
+
+// RIGHT-CLICK PASTE MENU
+javax.swing.JPopupMenu popup = new javax.swing.JPopupMenu();
+javax.swing.JMenuItem pasteItem = new javax.swing.JMenuItem("Paste");
+
+// Action to paste clipboard contents
+pasteItem.addActionListener(e -> {
+    try {
+        java.awt.datatransfer.Clipboard clipboard = java.awt.Toolkit.getDefaultToolkit().getSystemClipboard();
+        String clipboardContent = (String) clipboard.getData(java.awt.datatransfer.DataFlavor.stringFlavor);
+        txtHash.setText(clipboardContent);
+    } catch (Exception ex) {
+        ex.printStackTrace();
+    }
+});
+popup.add(pasteItem);
+txtHash.setComponentPopupMenu(popup);
+
+setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
    
 
    
@@ -53,11 +81,10 @@ private javax.swing.JButton btnConfirm;
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txtHash = new javax.swing.JTextPane();
         BtnValidation = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        txtHash = new javax.swing.JTextField();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -78,8 +105,6 @@ private javax.swing.JButton btnConfirm;
 
         jLabel3.setText("HashTransaction");
 
-        jScrollPane2.setViewportView(txtHash);
-
         BtnValidation.setText("Confirm");
         BtnValidation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -90,6 +115,12 @@ private javax.swing.JButton btnConfirm;
         jLabel4.setText("Wallet to send :   0x7Be9992213C89CDc53f086897A20c40d1c0C8C97");
 
         jLabel2.setText("Payment ");
+
+        txtHash.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtHashActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -105,19 +136,17 @@ private javax.swing.JButton btnConfirm;
                     .addGroup(layout.createSequentialGroup()
                         .addGap(32, 32, 32)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 481, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 481, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(34, 34, 34)
+                                .addComponent(txtHash, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(171, 171, 171)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(231, 231, 231)
-                        .addComponent(BtnValidation)))
+                .addGap(231, 231, 231)
+                .addComponent(BtnValidation)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -137,14 +166,11 @@ private javax.swing.JButton btnConfirm;
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(43, 43, 43)
                                 .addComponent(jLabel1)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(27, 27, 27)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(44, 44, 44)
-                                .addComponent(jLabel3)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                        .addGap(38, 38, 38)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3)
+                            .addComponent(txtHash, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
                 .addComponent(BtnValidation)
                 .addGap(55, 55, 55))
         );
@@ -160,6 +186,7 @@ private javax.swing.JButton btnConfirm;
             JOptionPane.showMessageDialog(this, "Please enter a transaction hash!", "Missing Hash", JOptionPane.WARNING_MESSAGE);
             return;
         }
+        System.out.println(finalTotalPrice);
 
         JSONObject paymentPayload = new JSONObject();
         paymentPayload.put("transactionHash", hash);
@@ -198,6 +225,10 @@ private javax.swing.JButton btnConfirm;
     
     }//GEN-LAST:event_BtnValidationActionPerformed
 
+    private void txtHashActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtHashActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtHashActionPerformed
+
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -208,8 +239,7 @@ private javax.swing.JButton btnConfirm;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextPane txtHash;
+    private javax.swing.JTextField txtHash;
     // End of variables declaration//GEN-END:variables
 }
