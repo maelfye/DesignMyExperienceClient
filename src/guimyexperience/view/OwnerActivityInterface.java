@@ -22,6 +22,7 @@ private Long OfferId;
     public OwnerActivityInterface(Long OfferId) {
         this.OfferId = OfferId;
         initComponents();
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     }
 
    
